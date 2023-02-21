@@ -55,9 +55,11 @@ const validateTalkRate = (req, res, next) => {
    next();
 };
 
-module.exports = {
+const validateFied = [
   validateName,
   validateAge,
   validateTalk,
   validateTalkRate,
-};
+];
+
+module.exports = validateFied;

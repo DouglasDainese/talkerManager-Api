@@ -3,12 +3,7 @@ const utilsFile = require('./utils/readTalkerData');
 const generateToken = require('./utils/generateToken');
 const { validateEmail, validatePassword } = require('./middleware/validateLogin');
 const checkToken = require('./middleware/checkToken');
-const { 
-  validateName,
-  validateAge,
-  validateTalk,
-  validateTalkRate, 
-  } = require('./middleware/validateFields');
+const validateFied = require('./middleware/validateFields');
 // iniciando o projeto
 
 const app = express();
@@ -47,7 +42,7 @@ app.post('/login', validateEmail, validatePassword, (_req, res) => {
 
 app.use(checkToken);
 
-app.post('/talker', validateName, validateAge, validateTalk, validateTalkRate, async (req, res) => {
+app.post('/talker', validateFied, async (req, res) => {
   const talkersData = await utilsFile.readAllData();
   const lastId = Number(talkersData[talkersData.length - 1].id);
   const newTalker = {
@@ -56,6 +51,24 @@ app.post('/talker', validateName, validateAge, validateTalk, validateTalkRate, a
   };
   await utilsFile.writeDataFile(newTalker);
   res.status(201).json(newTalker);
+});
+
+app.put('/talker/:id', validateFied, async (req, res) => {
+  const id = Number(req.params.id);
+  const newTalker = {
+    id,
+    ...req.body,
+  };
+  const updateTalkers = [];
+  (await utilsFile.readAllData()).reduce((acc, talker) => {
+    if (talker.id === id) {
+      updateTalkers.push(newTalker);
+    } else updateTalkers.push(talker);
+    return true;
+  }, updateTalkers);
+  console.log(newTalker);
+ await utilsFile.updateDataFile(updateTalkers);
+ return res.status(HTTP_OK_STATUS).json(newTalker);
 });
 
 app.listen(PORT, () => {

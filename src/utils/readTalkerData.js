@@ -23,7 +23,17 @@ const writeDataFile = async (newTalker) => {
   }
 };
 
+const updateDataFile = async (newData) => {
+  try {
+    const contentPath = path.resolve(__dirname, '../talker.json');
+    await fs.writeFile(contentPath, JSON.stringify(newData));
+  } catch (error) {
+    return `Erro ao gravar no arquivo ${error}`;
+  }
+};
+
 module.exports = {
   readAllData,
   writeDataFile,
+  updateDataFile,
 };
