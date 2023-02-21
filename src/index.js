@@ -1,6 +1,6 @@
 const express = require('express');
-const fs = require('fs/promises');
-const path = require('path');
+const { validateId } = require('./middleware/getTalkerById');
+const fileUtils = require('./utils/readTalkerData');
 // iniciando o projeto
 
 const app = express();
@@ -14,11 +14,22 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker', async (req, res) => {
-  const contentPath = path.resolve(__dirname, 'talker.json');
-  const data = await fs.readFile(contentPath, 'utf-8');
-  const talkersData = JSON.parse(data);
+app.get('/talker', async (_req, res) => {
+  const talkersData = await fileUtils.readAllData();
  return res.status(HTTP_OK_STATUS).json(talkersData);
+});
+
+app.get('/talker/:id', async (req, res) => {
+  const id = Number(req.params.id);
+  const talkerData = await fileUtils.readAllData();
+  const checkIdData = talkerData.some((t) => t.id === id);
+  if (!checkIdData) {
+      return res.status(404).json({
+         message: 'Pessoa palestrante não encontrada',
+       });
+  }
+  const talkerById = talkerData.find((talker) => talker.id === id);
+  return res.status(HTTP_OK_STATUS).json(talkerById);
 });
 
 app.listen(PORT, () => {
