@@ -2,6 +2,13 @@ const express = require('express');
 const utilsFile = require('./utils/readTalkerData');
 const generateToken = require('./utils/generateToken');
 const { validateEmail, validatePassword } = require('./middleware/validateLogin');
+const checkToken = require('./middleware/checkToken');
+const { 
+  validateName,
+  validateAge,
+  validateTalk,
+  validateTalkRate, 
+  } = require('./middleware/validateFields');
 // iniciando o projeto
 
 const app = express();
@@ -36,6 +43,19 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', validateEmail, validatePassword, (_req, res) => {
   const token = generateToken();
   res.status(HTTP_OK_STATUS).json({ token });
+});
+
+app.use(checkToken);
+
+app.post('/talker', validateName, validateAge, validateTalk, validateTalkRate, async (req, res) => {
+  const talkersData = await utilsFile.readAllData();
+  const lastId = Number(talkersData[talkersData.length - 1].id);
+  const newTalker = {
+    id: lastId + 1,
+    ...req.body,
+  };
+  await utilsFile.writeDataFile(newTalker);
+  res.status(201).json(newTalker);
 });
 
 app.listen(PORT, () => {
