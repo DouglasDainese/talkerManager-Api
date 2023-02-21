@@ -1,6 +1,5 @@
 const express = require('express');
-const { validateId } = require('./middleware/getTalkerById');
-const fileUtils = require('./utils/readTalkerData');
+const utilsFile = require('./utils/readTalkerData');
 // iniciando o projeto
 
 const app = express();
@@ -15,13 +14,13 @@ app.get('/', (_request, response) => {
 });
 
 app.get('/talker', async (_req, res) => {
-  const talkersData = await fileUtils.readAllData();
+  const talkersData = await utilsFile.readAllData();
  return res.status(HTTP_OK_STATUS).json(talkersData);
 });
 
 app.get('/talker/:id', async (req, res) => {
   const id = Number(req.params.id);
-  const talkerData = await fileUtils.readAllData();
+  const talkerData = await utilsFile.readAllData();
   const checkIdData = talkerData.some((t) => t.id === id);
   if (!checkIdData) {
       return res.status(404).json({
