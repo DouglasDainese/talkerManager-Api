@@ -55,10 +55,7 @@ app.post('/talker', validateFied, async (req, res) => {
 
 app.put('/talker/:id', validateFied, async (req, res) => {
   const id = Number(req.params.id);
-  const newTalker = {
-    id,
-    ...req.body,
-  };
+  const newTalker = { id, ...req.body };
   const updateTalkers = [];
   (await utilsFile.readAllData()).reduce((acc, talker) => {
     if (talker.id === id) {
@@ -69,6 +66,14 @@ app.put('/talker/:id', validateFied, async (req, res) => {
   console.log(newTalker);
  await utilsFile.updateDataFile(updateTalkers);
  return res.status(HTTP_OK_STATUS).json(newTalker);
+});
+
+app.delete('/talker/:id', async (req, res) => {
+  const id = Number(req.params.id);
+  const updateTalkers = (await utilsFile.readAllData())
+    .filter((talker) => talker.id !== id);
+    await utilsFile.updateDataFile(updateTalkers);
+ return res.status(204).json();
 });
 
 app.listen(PORT, () => {
