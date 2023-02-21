@@ -1,5 +1,6 @@
 const express = require('express');
 const utilsFile = require('./utils/readTalkerData');
+const generateToken = require('./utils/generateToken');
 // iniciando o projeto
 
 const app = express();
@@ -29,6 +30,11 @@ app.get('/talker/:id', async (req, res) => {
   }
   const talkerById = talkerData.find((talker) => talker.id === id);
   return res.status(HTTP_OK_STATUS).json(talkerById);
+});
+
+app.post('/login', (req, res) => {
+  const token = generateToken();
+  res.status(HTTP_OK_STATUS).json({ token });
 });
 
 app.listen(PORT, () => {
