@@ -17,9 +17,17 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+app.get('/talker/search', checkToken, async (req, res) => {
+  const search = req.query.q;
+  const allTalkers = (await utilsFile.readAllData())
+    .filter((talker) => talker.name.includes(search));
+
+  return res.status(HTTP_OK_STATUS).json(allTalkers);
+});
+
 app.get('/talker', async (_req, res) => {
-  const talkersData = await utilsFile.readAllData();
- return res.status(HTTP_OK_STATUS).json(talkersData);
+  const allTalkers = await utilsFile.readAllData();
+ return res.status(HTTP_OK_STATUS).json(allTalkers);
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -43,8 +51,8 @@ app.post('/login', validateEmail, validatePassword, (_req, res) => {
 app.use(checkToken);
 
 app.post('/talker', validateFied, async (req, res) => {
-  const talkersData = await utilsFile.readAllData();
-  const lastId = Number(talkersData[talkersData.length - 1].id);
+  const allTalkers = await utilsFile.readAllData();
+  const lastId = Number(allTalkers[allTalkers.length - 1].id);
   const newTalker = {
     id: lastId + 1,
     ...req.body,
