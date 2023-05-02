@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>README - Talker Manager</title>
-</head>
 <body>
 	<h1>Talker Manager</h1>
 	<p>Este projeto é uma API de gerenciamento de palestrantes desenvolvido como parte do módulo de introdução ao Node.js do curso de desenvolvimento web da Trybe.</p>
